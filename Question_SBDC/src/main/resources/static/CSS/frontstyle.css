@@ -1,0 +1,61 @@
+*{
+	margin : 0;
+	padding : 0;
+}
+
+#wrap{
+	width : 100%;
+	margin: 0 auto;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+.header-container{
+	height : 100px;
+	/*background-color : white;*/
+	font-weight : 400;
+};
+
+.main-content{
+	float : center;
+	height : 450px;
+	font-weight : 400;
+	overflow: auto;
+	position : fixed;
+
+}
+
+.footer-container{
+	position : relative;
+	bottom : 0;
+	font-weight : 400;
+}
+
+.admin-main{
+	positon : absolute;
+	top : 10px;
+	right : 20px;
+	left : 20px;
+	overflow : auto;
+	font-weight : 400;
+	
+}
+
+<!--관리자페이지-->
+.admin-main-container {
+  display: flex;
+}
+
+.admin-box-left {
+  width : 100px;
+  float : left;
+}
+
+.admin-box-center {
+  margin : 0 auto;
+  text-align: center;
+}
+
+.admin-box-right {
+  width : 100px;
+  float : right;
+}

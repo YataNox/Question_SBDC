@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sbdc.dao.IMemoryDAO">
+	<insert id="MemoryWrite" parameterType="com.sbdc.dto.MemoryVO">
+		INSERT INTO TB_UPDATE_MEMORY(MEMO_NUM, MEMO_DEPT_NAME, MEMO_ADMIN_NAME, MEMO_DATA_KIND, MEMO_DATA_NUM, MEMO_KIND, MEMO_UPDATE_TEXT)
+		VALUES(SEQ_TB_UPDATE_MEMORY_NUM.nextval, #{memo_dept_name}, #{memo_admin_name}, #{memo_data_kind}, #{memo_data_num},
+		#{memo_kind}, #{memo_update_text})
+	</insert>
+	
+	<select id="GetMemoryList" resultType="com.sbdc.dto.MemoryVO">
+		SELECT * 
+		FROM TB_UPDATE_MEMORY
+		WHERE MEMO_DATA_KIND=#{param2} AND MEMO_DATA_NUM=#{param1}
+		order by memo_date desc
+	</select>
+</mapper>

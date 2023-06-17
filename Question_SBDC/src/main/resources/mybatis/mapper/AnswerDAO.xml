@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sbdc.dao.IAnswerDAO">
+	<select id="GetAnswers" resultType="com.sbdc.dto.AnswerVO">
+		SELECT * FROM TB_ANSWER WHERE answ_is_showing = 'Y' AND answ_q_inside_num = ${param1} 
+		ORDER BY answ_real_num
+	</select>
+	
+	<delete id="DeleteAnswer">
+		<!-- DELETE FROM TB_ANSWER where answ_q_inside_num = #{param1}-->
+		UPDATE TB_ANSWER SET answ_is_showing = 'N' WHERE answ_q_inside_num = #{param1}
+	</delete>
+	
+	<delete id="DeleteAnswerByRealNum" parameterType="_int">
+		UPDATE TB_ANSWER SET answ_is_showing = 'N' WHERE answ_real_num = #{param1}
+	</delete>
+	
+	<update id="UpdateAnswer" parameterType="com.sbdc.dto.AnswerVO">
+		UPDATE TB_ANSWER SET answ_next_level=#{answ_next_level}, answ_next_num=#{answ_next_num},
+		answ_text=#{answ_text}, answ_final_yn=#{answ_final_yn}, biz_num=#{biz_num},
+		answ_date=sysdate, answ_revise=#{answ_revise}+1
+		WHERE answ_real_num = #{answ_real_num}
+	</update>
+	
+	<insert id="WriteAnswer" parameterType="com.sbdc.dto.AnswerVO">
+		INSERT INTO TB_ANSWER(answ_real_num, answ_q_inside_num, answ_next_level, answ_next_num, answ_text, answ_final_yn,
+		biz_num, answ_date, answ_revise)
+		VALUES(SEQ_TB_ANSWER_RNUM.nextval, #{answ_q_inside_num}, #{answ_next_level}, #{answ_next_num}, #{answ_text},
+		#{answ_final_yn}, #{biz_num}, sysdate, 0)
+	</insert>
+	
+	<select id="GetLastAnswer" parameterType="_int" resultType="_int">
+		SELECT answ_real_num FROM TB_ANSWER WHERE answ_is_showing = 'Y' AND answ_q_inside_num = #{param1} ORDER BY answ_date desc
+	</select>
+</mapper>

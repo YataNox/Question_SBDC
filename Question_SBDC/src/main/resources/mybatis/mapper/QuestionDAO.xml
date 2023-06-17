@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sbdc.dao.IQuestionDAO">
+	<select id="GetQuestion" resultType="com.sbdc.dto.QuestionVO">
+		SELECT * FROM TB_QUESTION WHERE ques_real_depth = #{param1} AND ques_num = #{param2} AND ques_is_showing = 'Y'
+	</select>
+	
+	<select id="GetQuestionByRealQNum" resultType="com.sbdc.dto.QuestionVO">
+		SELECT * FROM TB_QUESTION WHERE ques_real_q_num = #{param1} AND ques_is_showing = 'Y'
+	</select>
+	
+	<select id="GetQuestionList" resultType="com.sbdc.dto.QuestionVO">
+		SELECT * FROM (SELECT * FROM (SELECT rownum as rn, q.* FROM 
+		((SELECT * FROM TB_QUESTION where ques_is_showing = 'Y' ORDER BY
+		${param2}) q))
+		WHERE rn&gt;=#{param1.startNum}) WHERE
+		rn&lt;=#{param1.endNum}
+	</select>
+	
+	<select id="GetQuestionCount" resultType="_int">
+		SELECT count(*) AS count FROM TB_QUESTION where ques_is_showing = 'Y'
+	</select>
+	
+	<delete id="DeleteQuestion">
+		<!-- DELETE FROM TB_QUESTION WHERE ques_real_q_num = #{param1}-->
+		UPDATE TB_QUESTION SET ques_is_showing = 'N' where ques_real_q_num = #{param1}
+	</delete>
+	
+	<update id="UpdateQuestion" parameterType="com.sbdc.dto.QuestionVO">
+		UPDATE TB_QUESTION SET ques_real_depth=#{ques_real_depth}, ques_num=#{ques_num},
+		ques_text=#{ques_text}, ques_date=sysdate, ques_revise=#{ques_revise}+1
+		WHERE ques_real_q_num=#{ques_real_q_num}
+	</update>
+	
+	<insert id="QuestionWrite" parameterType="com.sbdc.dto.QuestionVO">
+		INSERT INTO TB_QUESTION(ques_real_q_num, ques_first_writer, ques_real_depth, ques_num, ques_text, ques_date, ques_revise) 
+		VALUES(SEQ_TB_QUESTION_RNUM.nextval, #{ques_first_writer}, #{ques_real_depth}, #{ques_num}, #{ques_text}, sysdate, 0)
+	</insert>
+</mapper>

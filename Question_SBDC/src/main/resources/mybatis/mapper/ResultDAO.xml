@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sbdc.dao.IResultDAO">
+	<select id="GetResult" resultType="com.sbdc.dto.ResultVO">
+		SELECT * FROM TB_RESULT WHERE biz_num = ${param1} AND res_is_showing = 'Y'
+	</select>
+	
+	<select id="GetBiz_Nums" resultType="_int">
+		SELECT DISTINCT biz_num FROM TB_RESULT WHERE res_is_showing = 'Y' ORDER BY biz_num ASC
+	</select>
+	
+	<select id="GetResultCount" resultType="_int">
+		SELECT count(*) AS count FROM TB_RESULT where res_is_showing = 'Y'
+	</select>
+	
+	<select id="GetResultList" resultType="com.sbdc.dto.ResultVO">
+		SELECT * FROM (SELECT * FROM (SELECT rownum as rn, r.* FROM 
+		((SELECT * FROM TB_RESULT where res_is_showing = 'Y' AND biz_num > 0 ORDER BY
+		${param2}) r))
+		WHERE rn&gt;=#{param1.startNum}) WHERE
+		rn&lt;=#{param1.endNum}
+	</select>
+	
+	<delete id="DeleteResult" parameterType="_int">
+		UPDATE TB_RESULT SET res_is_showing = 'N' where biz_num = #{param1}
+	</delete>
+	
+	<update id="UpdateResult" parameterType="com.sbdc.dto.ResultVO">
+		UPDATE TB_RESULT SET res_biz_text=#{res_biz_text}, res_link=#{res_link},
+		res_date=sysdate, res_revise=#{res_revise}+1
+		WHERE biz_num=#{biz_num}
+	</update>
+	
+	<insert id="WriteResult" parameterType="com.sbdc.dto.ResultVO">
+		INSERT INTO TB_RESULT(biz_num, res_biz_text, res_link, res_count, res_date, res_revise)
+		VALUES(SEQ_TB_RESULT_BIZNUM.nextval, #{res_biz_text}, #{res_link}, #{res_count}, sysdate, 0)
+	</insert>
+	
+	<select id="getResultALL" resultType="com.sbdc.dto.ResultVO">
+		SELECT * FROM TB_RESULT WHERE res_is_showing = 'Y' AND biz_num > 0 ORDER BY biz_num
+	</select>
+	
+	<update id="SetResultCount" parameterType="_int">
+		UPDATE TB_RESULT SET res_count = res_count + 1 WHERE biz_num = #{param1} 
+	</update>
+	
+	<select id="GetTotalCount" resultType="com.sbdc.dto.StatisticsVO">
+		SELECT * FROM statistics_Result
+	</select>
+	
+	<select id="GetLastBiz_num" resultType="_int" parameterType="_int">
+		SELECT biz_num 
+		FROM (SELECT biz_num FROM TB_RESULT WHERE res_is_showing = 'Y' ORDER BY res_date desc)
+		WHERE rownum &lt;= 1
+	</select>
+</mapper>
